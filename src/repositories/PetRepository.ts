@@ -2,6 +2,7 @@ import InterfacePetRepository from "./interfaces/InterfacePetRepository";
 import PetEntity from "../entities/PetEntity";
 import { Repository } from "typeorm";
 import AdotanteEntity from "../entities/AdotanteEntity";
+import EnumPorte from "../enum/EnumPorte";
 
 export default class PetRepository implements InterfacePetRepository {
   private petRepository: Repository<PetEntity>;
@@ -21,6 +22,8 @@ export default class PetRepository implements InterfacePetRepository {
   async listaPet(): Promise<PetEntity[]> {
     return await this.petRepository.find();
   }
+
+
   async atualizaPet(
     id: number,
     newData: PetEntity
@@ -85,4 +88,11 @@ export default class PetRepository implements InterfacePetRepository {
     await this.petRepository.save(pet);
     return { success: true};
   }
+
+
+  async buscaPetPorCampoGenerico<Tipo extends keyof PetEntity>(campo: Tipo, valor: PetEntity[Tipo]): Promise<PetEntity[]> {
+    const pets = await this.petRepository.find({where:{[campo]:valor}})
+    return pets;
+  }
+
 }
